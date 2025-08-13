@@ -24,8 +24,8 @@ you can use docker image to run inference that will saved at `/data/OpenPCDet/da
 docker run --rm --gpus all \
   -v your_data:/data \
   crsilnfmprod.azurecr.io/voxel_rcnn_car:latest \
-  bash -lc ' python3 /app/OpenPCDet/tools/demo.py \
-              --cfg_file /data/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml \
+  bash -lc ' cd /app/OpenPCDet/tools/ && python3 demo.py \
+              --cfg_file cfgs/kitti_models/voxel_rcnn_car.yaml \
               --ckpt /app/OpenPCDet/models/voxel_rcnn_car.pth \
               --data_path /data/OpenPCDet/data/npy/bin/'
 
