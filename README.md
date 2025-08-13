@@ -1,18 +1,8 @@
 <img src="docs/open_mmlab.png" align="right" width="30%">
 
 # RUN
-````
-docker run --rm --gpus all \
-  -v your_data:/data \
-  crsilnfmprod.azurecr.io/voxel_rcnn_car:latest \
-  bash -lc ' python3 /app/OpenPCDet/tools/demo.py \
-              --cfg_file /data/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml \
-              --ckpt /app/OpenPCDet/models/voxel_rcnn_car.pth \
-              --data_path /data/OpenPCDet/data/npy/bin/'
+it works with .bin files. you first have to convert npy to .bin
 
-````
-
-convert NPY to bin
 ````
 def convert_npy_to_bin(npy_file: Path, bin_file: Path, voxel_size=0.1):
     data = np.load(npy_file)
@@ -28,6 +18,17 @@ def convert_npy_to_bin(npy_file: Path, bin_file: Path, voxel_size=0.1):
     kitti_points.tofile(bin_file)
     print(f"✅ Converted {npy_file.name} → {bin_file.name} [{kitti_points.shape}]")
     return True
+````
+you can use docker image to run inference that will saved at `/data/OpenPCDet/data/npy/predictions`
+````
+docker run --rm --gpus all \
+  -v your_data:/data \
+  crsilnfmprod.azurecr.io/voxel_rcnn_car:latest \
+  bash -lc ' python3 /app/OpenPCDet/tools/demo.py \
+              --cfg_file /data/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml \
+              --ckpt /app/OpenPCDet/models/voxel_rcnn_car.pth \
+              --data_path /data/OpenPCDet/data/npy/bin/'
+
 ````
 
 # OpenPCDet
