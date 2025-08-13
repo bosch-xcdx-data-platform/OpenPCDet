@@ -1,5 +1,35 @@
 <img src="docs/open_mmlab.png" align="right" width="30%">
 
+# RUN
+````
+docker run --rm --gpus all \
+  -v your_data:/data \
+  crsilnfmprod.azurecr.io/voxel_rcnn_car:latest \
+  bash -lc ' python3 /app/OpenPCDet/tools/demo.py \
+              --cfg_file /data/OpenPCDet/tools/cfgs/kitti_models/voxel_rcnn_car.yaml \
+              --ckpt /app/OpenPCDet/models/voxel_rcnn_car.pth \
+              --data_path /data/OpenPCDet/data/npy/bin/'
+
+````
+
+convert NPY to bin
+````
+def convert_npy_to_bin(npy_file: Path, bin_file: Path, voxel_size=0.1):
+    data = np.load(npy_file)
+    xyz = data[:, :3].astype(np.float32) # * voxel_size
+    
+    if xyz.shape[0] == 0:
+        print(f"❌ No valid points in {npy_file.name}, skipping.")
+        return False
+
+    intensity = np.zeros((xyz.shape[0], 1), dtype=np.float32)
+    kitti_points = np.hstack((xyz, intensity))
+    bin_file.parent.mkdir(parents=True, exist_ok=True)
+    kitti_points.tofile(bin_file)
+    print(f"✅ Converted {npy_file.name} → {bin_file.name} [{kitti_points.shape}]")
+    return True
+````
+
 # OpenPCDet
 
 `OpenPCDet` is a clear, simple, self-contained open source project for LiDAR-based 3D object detection. 
